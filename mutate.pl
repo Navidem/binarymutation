@@ -99,7 +99,7 @@ sub is_past_mutation {
 sub is_flag_use {
     my ($insn) = (@_);
     #if($insn =~ /\scmov/ || $insn =~ /\sset.*/ || ($insn =~ /\sj.*/ && !($insn =~ /\sjmp.*/))) {
-    if($insn =~ /cmov/ || $insn =~ /set.*/ || ($insn =~ /j.*/ && !($insn =~ /jmp.*/))) {
+    if($insn =~ /cmov/ || $insn =~ /set.*/ || ($insn =~ /j.*/ && !($insn =~ /jmp.*/)) || $insn =~ /adc/ || $insn =~ /sbb/) {
 	return 1;
     }
     return 0;
@@ -126,5 +126,21 @@ sub mutate {
 	    $insn = "  nop\n";
 	}
     }
+    if($insn =~ /adc.*/ ){
+	if ($mutate_direction == 0){
+		$insn =~ s/adc/add/g;
+		$insn .= "incl " . (split(',', $insn))[-1];
+	}elsif ($mutate_direction == 1) {
+	        $insn = "  nop\n"
+	}
+     }
+     if($insn =~ /sbb/){
+	if($mutate_direction == 0){
+		$insn =~ s/sbb /sub /g;
+		$insn .= "decl " . (split(',',$insn))[-1];
+	}elsif ($mutate_direction == 1){
+                $insn = " nop\n"
+        }
+     }		
     return $insn;
 }
