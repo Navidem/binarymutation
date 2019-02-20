@@ -131,7 +131,7 @@ sub mutate {
 		$insn =~ s/adc/add/g;
 		$insn .= "incl " . (split(',', $insn))[-1];
 	}elsif ($mutate_direction == 1) {
-	        $insn = "  nop\n"
+		$insn =~ s/adc/add/g;		
 	}
      }
      if($insn =~ /sbb/){
@@ -139,7 +139,7 @@ sub mutate {
 		$insn =~ s/sbb /sub /g;
 		$insn .= "decl " . (split(',',$insn))[-1];
 	}elsif ($mutate_direction == 1){
-                $insn = " nop\n"
+		$insn =~ s/sbb /sub /g;
         }
      }		
     return $insn;
